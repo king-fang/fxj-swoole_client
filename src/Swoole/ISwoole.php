@@ -1,10 +1,10 @@
 <?php
-
+namespace Swoole;
 interface ISwoole {
 
     const HOST = '127.0.0.1';
 
-    const POST = '8081';
+    const POST = '9501';
 
     const SERVER_TYPE = ['tcp' => SWOOLE_SOCK_TCP,'udp' => SWOOLE_SOCK_UDP];
 
@@ -14,5 +14,5 @@ interface ISwoole {
      * @param array $option
      * @return mixed
      */
-    public function set(array $option = []);
+    public function setOptions(array $option = []);
 }

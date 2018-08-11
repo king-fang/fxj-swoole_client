@@ -1,6 +1,6 @@
 <?php
 
-
+namespace Swoole;
 abstract class ISwooleComponent {
 
     /**
@@ -13,6 +13,5 @@ abstract class ISwooleComponent {
      * @param int $flag
      * @return mixed
      */
-    abstract static protected function doConnect(string $host, int $port, float $timeout = 0.5, int $flag = 0);
-
+    abstract  protected function doConnect(string $host, int $port, float $timeout = 0.5, int $flag = 0);
 }

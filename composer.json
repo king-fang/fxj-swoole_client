@@ -15,9 +15,9 @@
     },
     "autoload": {
         "psr-4": {
-            "SwooleException\\": "src/SwooleException",
-            "Client\\": "src/Client",
-            "Config\\": "src/Config"
+            "src\\": "src/",
+            "Client\\": "src/Client/",
+            "Swoole\\": "src/Swoole/"
         }
     }
 }
