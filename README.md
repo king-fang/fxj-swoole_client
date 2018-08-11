@@ -11,7 +11,7 @@
     $swoole = new \Swoole\BaseSwooleConnect('tcp',false,false);
 ```
 
-####建立连接发送数据
+####Establishing connection send data
  ```
  $data = [
      'name' => 'fxj',
