@@ -1,0 +1,23 @@
+{
+    "name": "fxj/swoole_client",
+    "description": "Swoole Client TCP/UDP",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "fxj",
+            "email": "2465998757@qq.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "SwooleException\\": "src/SwooleException",
+            "Client\\": "src/Client",
+            "Config\\": "src/Config"
+        }
+    }
+}
