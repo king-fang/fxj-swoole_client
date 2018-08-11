@@ -10,14 +10,20 @@
      */
     $swoole = new \Swoole\BaseSwooleConnect('tcp',false,false);
 ```
+###异步回调设置 默认 SwooleCallback
+ ```
+ //自定义回调只需要实现ISwooleCallback接口即可
+ $client = new \Client\TcpClient($swoole,$data,new \Swoole\SwooleCallback());
+ ```
 
-####Establishing connection send data
+###建立连链接发送数据
  ```
  $data = [
      'name' => 'fxj',
      'age' => 18,
  ];
- $client = new \Client\TcpClient($swoole,$data);
  $res = $client->doConnect('192.168.3.10',8090);
  var_dump($res);
  ```
+ 
+

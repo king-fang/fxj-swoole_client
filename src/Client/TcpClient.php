@@ -57,6 +57,7 @@ class TcpClient extends SwooleDecorator {
             //建立链接 同步阻塞
             if ($this->hookup->connect($host??self::$host, $port == 0 ? self::$port : $port,$timeout,$flag)) {
                 echo "swoole_client Asynchronous link successfully.\n";
+                $this->sockname = $this->hookup->getsockname();
                 $this->hookup->send(json_encode($this->data));
                 $res = $this->hookup->recv();
                 return $res;
@@ -73,7 +74,7 @@ class TcpClient extends SwooleDecorator {
                         $this->hookup->close(true);
                         if($this->hookup->connect($host??self::$host, $port == 0 ? self::$port : $port,$timeout,$flag)){
                             echo "swoole_client Asynchronous link successfully.\n";
-                            $this->peername =  $this->hookup->getpeername();
+                            $this->sockname = $this->hookup->getsockname();
                             $this->hookup->send(json_encode($this->data));
                             $res = $this->hookup->recv();
                             return $res;
@@ -88,15 +89,19 @@ class TcpClient extends SwooleDecorator {
     }
 
     /**
-     * 用于获取客户端socket的本地host:port
-     * 如：array('host' => '127.0.0.1', 'port' => 53652)
+     * 获取 客户端HOST:PORT
      * @return mixed
      */
-    public function getPeerName()
+    public function getSockname()
     {
-        return $this->peername;
+        return $this->sockname;
     }
 
+    /**
+     * 设置参数
+     * @param array $option
+     * @return array
+     */
     public function setOptions(array $option = [])
     {
         return $this->set = $option;

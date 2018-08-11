@@ -15,7 +15,6 @@ class SwooleCallback implements ISwooleCallback {
         //是否成功链接
         if($cli->isConnected())
         {
-            echo "swoole_client Asynchronous link successfully.\n";
             $cli->send(json_encode($this->data));
         }else{
             echo "swoole_client Asynchronous link failure.\n";
@@ -26,7 +25,7 @@ class SwooleCallback implements ISwooleCallback {
     {
         echo $data.PHP_EOL;
         sleep(2);
-        $cli->send(json_encode($this->data));
+        return $cli->send(json_encode($this->data));
     }
 
     //链接关闭
