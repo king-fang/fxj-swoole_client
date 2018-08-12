@@ -23,12 +23,17 @@ class SwooleCallback implements ISwooleCallback {
 
     public function onReceive($cli, $data)
     {
+        if(empty($data))
+        {
+            echo 'close';
+            return;
+        }
         echo $data.PHP_EOL;
         sleep(2);
-        return $cli->send(json_encode($this->data));
+        $cli->send(json_encode($this->data));
     }
 
-    //链接关闭
+    //链接关闭  UDP 没有close
     public function onClose($cli)
     {
         echo "swoole_client Asynchronous link close.\n";

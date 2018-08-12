@@ -3,21 +3,10 @@ namespace Client;
 
 use Swoole\ISwooleCallback;
 use Swoole\ISwooleComponent;
+use Swoole\Read;
 use Swoole\SwooleDecorator;
 
 class TcpClient extends SwooleDecorator {
-
-    //swoole_client
-    private  $hookup;
-
-    //BaseSwooleConnect
-    private $component;
-
-    //传输的数据
-    private $data = [];
-
-    //回调类
-    private $callback;
 
     public function __construct(ISwooleComponent $component,array $data,ISwooleCallback $callback = null)
     {
@@ -45,18 +34,16 @@ class TcpClient extends SwooleDecorator {
         {
             //异步必须设置回调函数
             if(is_null($this->callback)){
-                throw new \InvalidArgumentException('Swoole TCP/UDP asynchronous link must be set callback.');
+                Read::write('Swoole TCP asynchronous link must be set callback.');
+                throw new \InvalidArgumentException('Swoole TCP asynchronous link must be set callback.');
             }
             $this->hookup->on('connect',array(new $this->callback($this->data), 'onConnect'));
             $this->hookup->on('receive',array(new $this->callback($this->data), 'onReceive'));
             $this->hookup->on('close',array(new $this->callback($this->data), 'onClose'));
             $this->hookup->on('error',array(new $this->callback($this->data), 'onError'));
-            //回调设置好之后在链接服务器
             return $this->hookup->connect($host??self::$host, $port == 0 ? self::$port : $port,$timeout,$flag);
         }else{
-            //建立链接 同步阻塞
             if ($this->hookup->connect($host??self::$host, $port == 0 ? self::$port : $port,$timeout,$flag)) {
-                echo "swoole_client Asynchronous link successfully.\n";
                 $this->sockname = $this->hookup->getsockname();
                 $this->hookup->send(json_encode($this->data));
                 $res = $this->hookup->recv();
@@ -68,7 +55,7 @@ class TcpClient extends SwooleDecorator {
                     //失败重连 5 次
                     $i = 1;
                     while ($i <= 5){
-                        echo sprintf( "Client reconnection...%d",$i).PHP_EOL;
+                        Read::write(sprintf( "Client reconnection...%d",$i));
                         sleep(2);
                         //启用SWOOLE_KEEP长连接后，close调用的第一个参数要设置为true表示强行销毁长连接socket
                         $this->hookup->close(true);
@@ -82,7 +69,7 @@ class TcpClient extends SwooleDecorator {
                         $i++;
                     }
                 }
-                echo "TCP long link failure.".PHP_EOL;
+                Read::write("TCP long link failure.");
                 return false;
             }
         }

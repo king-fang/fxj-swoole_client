@@ -45,11 +45,13 @@ class BaseSwooleConnect extends ISwooleComponent{
         //异步 且 长连接 抛出异常 长连接只支持同步阻塞模式
         if($isSync && $isKeep){
             //swoole长连接只支持同步客户端
+            Read::write('Swoole long connections only support synchronous clients.');
             throw new \InvalidArgumentException('Swoole long connections only support synchronous clients.');
         }
         //是否TCP/UDP
         if(!in_array($serverType,array_keys(self::$serverType)))
         {
+            Read::write('Only TCP/UDP is allowed to create links.');
             throw new \InvalidArgumentException('Only TCP/UDP is allowed to create links.');
         }
         //设置异步处理 默认同步

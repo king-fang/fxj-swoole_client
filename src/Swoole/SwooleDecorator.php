@@ -23,6 +23,22 @@ abstract class SwooleDecorator extends ISwooleComponent implements ISwoole {
      */
     protected static $serverType = ISwoole::SERVER_TYPE;
 
+
+    //swoole_client
+    protected  $hookup;
+
+
+    //BaseSwooleConnect
+    protected $component;
+
+
+    //传输的数据
+    protected $data = [];
+
+
+    //回调类
+    protected $callback;
+
     /**
      * 配置参数
      * 详见：https://wiki.swoole.com/wiki/page/p-client_setting.html

@@ -2,7 +2,11 @@
 
 namespace Client;
 
+use Swoole\Mysql\Exception;
+use Swoole\Read;
 use Swoole\SwooleDecorator;
+use Swoole\ISwooleCallback;
+use Swoole\ISwooleComponent;
 
 class UpdClient extends SwooleDecorator {
 
@@ -16,15 +20,47 @@ class UpdClient extends SwooleDecorator {
     protected $peername;
 
 
-
-    public function __construct()
+    public function __construct(ISwooleComponent $component,array $data,ISwooleCallback $callback = null)
     {
-
+        $this->hookup  = $component->getHookup();
+        $this->component = $component;
+        $this->data = $data;
+        $this->callback = $callback;
     }
 
-    public function doConnect(string $host, int $port, float $timeout = 0.5, int $flag = 0)
+    public function doConnect(string $host = null, int $port = 0, float $timeout = 0.5, int $flag = 0)
     {
-
+        //设置参数
+        if(!empty($this->set))
+        {
+            $this->hookup->set($this->set);
+        }
+        /**
+         * 异步建立链接设置回
+         * connect会立即返回true。但实际上连接并未建立。
+         * 所以不能在connect后使用send。通过isConnected()判断也是false。当连接成功后，系统会自动回调onConnect。
+         * 这时才可以使用send向服务器发送数据
+         */
+        if($this->component->getIsSync())
+        {
+            //异步必须设置回调函数
+            if(is_null($this->callback)){
+                Read::write('Swoole UDP asynchronous link must be set callback.');
+                throw new \InvalidArgumentException('Swoole UDP asynchronous link must be set callback.');
+            }
+            $this->hookup->on('connect',array(new $this->callback($this->data), 'onConnect'));
+            $this->hookup->on('receive',array(new $this->callback($this->data), 'onReceive'));
+            $this->hookup->on('close',array(new $this->callback($this->data), 'onClose'));
+            $this->hookup->on('error',array(new $this->callback($this->data), 'onError'));
+            return $this->hookup->connect($host??self::$host, $port == 0 ? self::$port : $port,$timeout,$flag);
+        }else{
+            $this->hookup->connect($host??self::$host, $port == 0 ? self::$port : $port,$timeout,$flag);
+            $this->sockname = $this->hookup->getsockname();
+            $this->hookup->send(json_encode($this->data));
+            $res = $this->hookup->recv();
+            $this->peername = $this->hookup->getpeername();
+            return $res;
+        }
     }
 
     /**
