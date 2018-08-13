@@ -1,5 +1,5 @@
 {
-    "name": "fxj/swoole_client",
+    "name": "momo/swoole_clients",
     "description": "Swoole Client TCP/UDP",
     "type": "library",
     "license": "MIT",
