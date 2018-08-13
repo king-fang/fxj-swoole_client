@@ -10,13 +10,13 @@
      */
     $swoole = new \Swoole\BaseSwooleConnect('tcp',false,false);
 ```
-###异步回调设置 默认 SwooleCallback
+### 异步回调设置 默认 SwooleCallback
  ```
  //自定义回调只需要实现ISwooleCallback接口即可
  $client = new \Client\TcpClient($swoole,$data,new \Swoole\SwooleCallback());
  ```
 
-###建立连链接发送数据
+### 建立连链接发送数据
  ```
  $data = [
      'name' => 'fxj',
